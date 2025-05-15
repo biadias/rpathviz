@@ -15,7 +15,11 @@ Imports:
     plotly,
     purrr,
     Rpath,
-    tidyverse
+    tidyverse,
+    ggraph,
+    grDevices,
+    igraph,
+    colorspace
 Suggests: 
     knitr,
     rmarkdown
