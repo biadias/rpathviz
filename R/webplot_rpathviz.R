@@ -73,7 +73,7 @@ webplot_rpathviz <- function(Rpath.obj,
     dplyr::mutate(id = GroupNum) %>%
     # Always convert Group to character then factor then numeric
     dplyr::mutate(group = as.numeric(as.factor(as.character(Group))))
-
+#BIA YOU ARE HERE ####
   # Calculate tot.catch and filter out fleet (type 3) nodes with no tot.catch.
   tot.catch <- Rpath.obj$Landings + Rpath.obj$Discards
   nodes <- nodes %>%
