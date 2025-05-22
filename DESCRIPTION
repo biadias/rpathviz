@@ -18,7 +18,8 @@ Imports:
     ggraph,
     grDevices,
     igraph,
-    colorspace
+    colorspace,
+    magrittr
 Suggests: 
     knitr,
     rmarkdown
