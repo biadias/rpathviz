@@ -1,0 +1,9 @@
+pandoc: '3.4'
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  Plotting: Plotting.html
+last_built: 2025-05-30T02:31Z
+urls:
+  reference: https://biadias.github.io/rpathviz/reference
+  article: https://biadias.github.io/rpathviz/articles
