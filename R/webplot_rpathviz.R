@@ -15,6 +15,19 @@
 #' @param fleet_color single color for fleet nodes.
 #' @param groups_palette color palette for non-fleet groups. Two palette options rpath_pal_dark and rpath_pal_light.
 #' @param text_size size of the text labels.
+#' @param max.overlaps maximum number of overlapping labels allowed by ggrepel. Increase for denser label coverage, decrease to reduce clutter. Default is 50.
+#' @param gradient Logical. If \code{TRUE}(default), edges are drawn with a colour gradient
+#'   (prey-to-predator) using \code{after_stat(index)}. If \code{FALSE},
+#'   edges are drawn in a fixed \code{line.col} colour, which renders significantly
+#'   faster for large food webs.
+#' @param labels Logical. If \code{TRUE} (default), group names are drawn using
+#'   \code{ggrepel} to avoid overlap. Set to \code{FALSE} to skip labels entirely,
+#'   which roughly halves render time on large food webs.
+#' @param cluster_method Community detection algorithm used to colour node clusters.
+#'   One of \code{"fast_greedy"} (default), \code{"louvain"},
+#'   \code{"walktrap"}, or \code{"edge_betweenness"}.
+#'   \code{"fast_greedy"} and \code{"louvain"} are recommended for large food webs;
+#'   \code{"edge_betweenness"} is the most accurate but significantly slower.
 #'
 #' @return Returns a plot visualization of the food web.
 #'
@@ -33,14 +46,14 @@
 #' # Plot food web diagram with all groups labeled, including fleets
 #' webplotviz(Rpath.obj, h_spacing = 3, text_size = 3)
 #'
-#' # Read in Rpath parameter file, generate and name model object
-#' Rpath.obj <- Rpath::rpath(Rpath::Ecosense.EBS, eco.name = "Eastern Bering Sea")
-#' # Plot food web diagram with all groups labeled, including fleets. Follow the steps
+#' # For large food webs, use labels = FALSE to speed up rendering, then save
+#' # with ggsave() for best results.
 #' # 1) assign the plot to an object
 #' # 2) use ggplot2::ggsave() to save the plot for a fast visualization
+#' Rpath.obj <- Rpath::rpath(Rpath::Ecosense.EBS, eco.name = "Eastern Bering Sea")
 #' wp <- webplotviz(Rpath.obj, h_spacing = 3, text_size = 3,
-#' node_size_min = 1, node_size_max = 50)
-#' ggplot2::ggsave("figures/EBSfoodwebplot2.png", wp , width= 16, height= 10)
+#'   node_size_min = 1, node_size_max = 50, labels = FALSE)
+#' ggplot2::ggsave("figures/EBSfoodwebplot2.png", wp, width = 16, height = 10)
 #'
 #'
 #' }
@@ -56,7 +69,11 @@ webplotviz <- function(Rpath.obj,
                                  node_size_max = 30,
                                  fleet_color = "#B40F20", # single color for fleet nodes
                                  groups_palette = "rpath_pal_dark",
-                                 text_size= 3)
+                                 text_size= 3,
+                                 max.overlaps = 50,
+                                 gradient = TRUE,
+                                 labels = TRUE,
+                                 cluster_method = c("fast_greedy", "louvain", "walktrap", "edge_betweenness"))
 {
   Biomass <- Group <- GroupNum <- cluster <- edge_stat <- fleet_tot <- from <- from_new <- id <- index <- new_id <- node_size <- to <- to_new <- type <- width <- NULL
   #Number of groups check to determine function plot
@@ -92,7 +109,10 @@ webplotviz <- function(Rpath.obj,
 
   # Compute node size based on Biomass.
   nodes <- nodes %>%
-    dplyr::mutate(node_size = scale_value(Biomass, node_size_min = 10, node_size_max = 30))
+    # log1p-transform before scaling: raw biomass spans several orders of
+  # magnitude (e.g. detritus ~4000 vs. seabirds ~0.001), so linear scaling
+  # collapses all living groups to the minimum.
+  dplyr::mutate(node_size = scale_value(log1p(Biomass), node_size_min = node_size_min, node_size_max = node_size_max))
 
   # Build the edge list using the original node IDs.
   allowed_ids <- nodes$id
@@ -150,9 +170,15 @@ webplotviz <- function(Rpath.obj,
                          edges = edge_list,
                          directed = TRUE)
 
-  # Compute cluster betweenness using igraph
+  # Community detection
+  cluster_method <- match.arg(cluster_method)
   graph_ig <- igraph::as.igraph(graph_obj)
-  clust <- igraph::cluster_edge_betweenness(graph_ig)
+  clust <- switch(cluster_method,
+    fast_greedy      = igraph::cluster_fast_greedy(igraph::as_undirected(graph_ig)),
+    louvain          = igraph::cluster_louvain(igraph::as_undirected(graph_ig)),
+    walktrap         = igraph::cluster_walktrap(graph_ig),
+    edge_betweenness = igraph::cluster_edge_betweenness(graph_ig)
+  )
   mem <- igraph::membership(clust)
   # Add cluster membership to nodes
   graph_obj <- graph_obj %>%
@@ -197,17 +223,32 @@ webplotviz <- function(Rpath.obj,
   jitter <- ggplot2::position_jitter(width = 0.1, height = 0.1)
 
 #browser() #for checks
+  # Edge layers: gradient path renders ~100 segments per edge (slow for large webs);
+  # fixed colour renders a single segment per edge.
+  edge_layers <- if (gradient) {
+    list(
+      ggraph::geom_edge_link(
+        ggplot2::aes(edge_width = width, color = ggplot2::after_stat(index)),
+        lineend = "round", alpha = 0.30),
+      ggraph::scale_edge_colour_gradient(low = "#ffd06f", high = "#aadce0", guide = "legend"),
+      ggraph::geom_edge_loop(
+        ggplot2::aes(edge_width = width, color = ggplot2::after_stat(index)),
+        alpha = 0.85, lineend = "round")
+    )
+  } else {
+    list(
+      ggraph::geom_edge_link(
+        ggplot2::aes(edge_width = width),
+        color = line.col, lineend = "round", alpha = 0.30),
+      ggraph::geom_edge_loop(
+        ggplot2::aes(edge_width = width),
+        color = line.col, alpha = 0.85, lineend = "round")
+    )
+  }
+
   # Build the ggraph plot
   p <- ggraph::ggraph(lay) +
-    ggraph::geom_edge_link(
-      ggplot2::aes(edge_width = edge_list$width,
-                   color = ggplot2::after_stat(index)),
-                   lineend = "round",
-                   alpha = 0.30) +
-    ggraph::scale_edge_colour_gradient(low = "#ffd06f", high = "#aadce0", guide = "legend") +
-    ggraph::geom_edge_loop(ggplot2::aes(edge_width = width, color = ggplot2::after_stat(index)),
-                   alpha = 0.85,
-                   lineend = "round") +
+    edge_layers +
     ggraph::scale_edge_width(range = c(0.2, 10)) +
     ggraph::geom_node_point(ggplot2::aes(size = node_size), color = "white") +
     ggraph::geom_node_point(ggplot2::aes(
@@ -215,19 +256,21 @@ webplotviz <- function(Rpath.obj,
       color = cluster,
       size = node_size
     )) +
-    ggplot2::scale_size(range = c(1, base::max(nodes$node_size, na.rm = TRUE))) +
+    ggplot2::scale_size_identity() +
     ggplot2::scale_color_manual(values = color_mapping) +
-    ggraph::geom_node_text(
-      ggplot2::aes(label = Group),
-      family="sans",
-      size = text_size,
-      color = "gray15",
-      repel = TRUE,
-      check_overlap = TRUE,
-      point.padding = ggplot2::unit(0.95, "lines"),
-      segment.size = 0.25,
-      max.overlaps = Inf
-    ) +
+    (if (labels) {
+      ggraph::geom_node_text(
+        ggplot2::aes(label = Group),
+        family = "sans",
+        size = text_size,
+        color = "gray15",
+        repel = TRUE,
+        check_overlap = TRUE,
+        point.padding = ggplot2::unit(0.95, "lines"),
+        segment.size = 0.25,
+        max.overlaps = max.overlaps
+      )
+    }) +
     ggplot2::labs(y = "Trophic Level", title = eco.name) +
     ggplot2::scale_y_continuous(breaks = base::seq(floor(y_min),
                                                    base::ceiling(y_max), by = 1),
@@ -245,19 +288,22 @@ webplotviz <- function(Rpath.obj,
   base::suppressWarnings(return(p))
 }
 
-#' Function to scale node size based on Biomass
+#' Scale a numeric vector to a new min–max range
 #'
-#' @param x Numeric vector of values to be scaled.
-#' @param orig_min Minimum value of the original scale (default is minimum of x).
-#' @param orig_max Maximum value of the original scale (default is maximum of x).
-#' @param node_size_min Minimum value of the new scale (default is 1).
-#' @param node_size_max Maximum value of the new scale (default is 30).
+#' @param x Numeric vector of values to be scaled. In \code{webplotviz()},
+#'   \code{log1p(Biomass)} is passed here so that the wide biomass range
+#'   (spanning several orders of magnitude) maps visually across the full
+#'   node size range rather than collapsing to the minimum.
+#' @param orig_min Minimum of the input scale (default: \code{min(x, na.rm = TRUE)}).
+#' @param orig_max Maximum of the input scale (default: \code{max(x, na.rm = TRUE)}).
+#' @param node_size_min Minimum value of the output scale (default is 1).
+#' @param node_size_max Maximum value of the output scale (default is 30).
 #'
 #' @noRd
 
 scale_value <- function(x,
-                        orig_min = min(x),
-                        orig_max = max(x),
+                        orig_min = min(x, na.rm = TRUE),
+                        orig_max = max(x, na.rm = TRUE),
                         node_size_min = 1,
                         node_size_max = 30) {
   node_size_min + ((x - orig_min) / (orig_max - orig_min)) * (node_size_max - node_size_min)

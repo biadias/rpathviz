@@ -1,0 +1,65 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>",
+  fig.path  = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# rpathviz <img src="man/figures/logo.png" align="right" width="120" />
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/biadias/rpathviz/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/biadias/rpathviz/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/biadias/rpathviz/graph/badge.svg)](https://app.codecov.io/gh/biadias/rpathviz)
+<!-- badges: end -->
+
+Visualizations for the [Rpath](https://github.com/NOAA-EDAB/Rpath) package.
+Plot beautiful food web diagrams and interactive simulation time series from
+your Ecopath/Ecosim models.
+
+## Installation
+
+```{r, eval = FALSE}
+remotes::install_github("biadias/rpathviz", build_vignettes = TRUE)
+```
+
+If you experience issues with `remotes`, use this alternative:
+
+```{r, eval = FALSE}
+pak::pak("biadias/rpathviz")
+```
+
+## Food web plot — `webplotviz()`
+
+```{r goa-plot, message=FALSE, warning=FALSE, fig.width=14, fig.height=9}
+library(rpathviz)
+library(Rpath)
+
+# Build the Gulf of Alaska model
+GOA.obj  <- rpath(Ecosense.GOA, eco.name = "Gulf of Alaska")
+
+# Plot the food web
+webplotviz(
+  GOA.obj,
+  h_spacing     = 3,
+  text_size     = 2.5,
+  node_size_min = 1,
+  node_size_max = 50
+)
+```
+
+*Figure 1. Western Gulf of Alaska marine food web.*
+
+## References
+
+Lucey, S. M., Gaichas, S. K., & Aydin, K. Y. (2020). Conducting reproducible
+ecosystem modeling using the open source mass balance model Rpath. *Ecological
+Modelling* 427(2020), 109057.
+<https://doi.org/10.1016/j.ecolmodel.2020.109057>

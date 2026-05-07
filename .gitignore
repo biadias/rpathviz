@@ -8,3 +8,5 @@ docs
 *.Rproj
 inst/doc
 .positai
+/doc/
+/Meta/

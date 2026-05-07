@@ -13,7 +13,11 @@ webplotviz(
   node_size_max = 30,
   fleet_color = "#B40F20",
   groups_palette = "rpath_pal_dark",
-  text_size = 3
+  text_size = 3,
+  max.overlaps = 50,
+  gradient = TRUE,
+  labels = TRUE,
+  cluster_method = c("fast_greedy", "louvain", "walktrap", "edge_betweenness")
 )
 }
 \arguments{
@@ -35,6 +39,23 @@ rpath object created from running \code{rpath()}.}
 \item{groups_palette}{color palette for non-fleet groups. Two palette options rpath_pal_dark and rpath_pal_light.}
 
 \item{text_size}{size of the text labels.}
+
+\item{max.overlaps}{maximum number of overlapping labels allowed by ggrepel. Increase for denser label coverage, decrease to reduce clutter. Default is 50.}
+
+\item{gradient}{Logical. If \code{TRUE}(default), edges are drawn with a colour gradient
+(prey-to-predator) using \code{after_stat(index)}. If \code{FALSE},
+edges are drawn in a fixed \code{line.col} colour, which renders significantly
+faster for large food webs.}
+
+\item{labels}{Logical. If \code{TRUE} (default), group names are drawn using
+\code{ggrepel} to avoid overlap. Set to \code{FALSE} to skip labels entirely,
+which roughly halves render time on large food webs.}
+
+\item{cluster_method}{Community detection algorithm used to colour node clusters.
+One of \code{"fast_greedy"} (default), \code{"louvain"},
+\code{"walktrap"}, or \code{"edge_betweenness"}.
+\code{"fast_greedy"} and \code{"louvain"} are recommended for large food webs;
+\code{"edge_betweenness"} is the most accurate but significantly slower.}
 }
 \value{
 Returns a plot visualization of the food web.
@@ -61,14 +82,14 @@ Rpath.obj <- Rpath::rpath(Rpath::AB.params, eco.name = "Anchovy Bay")
 # Plot food web diagram with all groups labeled, including fleets
 webplotviz(Rpath.obj, h_spacing = 3, text_size = 3)
 
-# Read in Rpath parameter file, generate and name model object
-Rpath.obj <- Rpath::rpath(Rpath::Ecosense.EBS, eco.name = "Eastern Bering Sea")
-# Plot food web diagram with all groups labeled, including fleets. Follow the steps
+# For large food webs, use labels = FALSE to speed up rendering, then save
+# with ggsave() for best results.
 # 1) assign the plot to an object
 # 2) use ggplot2::ggsave() to save the plot for a fast visualization
+Rpath.obj <- Rpath::rpath(Rpath::Ecosense.EBS, eco.name = "Eastern Bering Sea")
 wp <- webplotviz(Rpath.obj, h_spacing = 3, text_size = 3,
-node_size_min = 1, node_size_max = 50)
-ggplot2::ggsave("figures/EBSfoodwebplot2.png", wp , width= 16, height= 10)
+  node_size_min = 1, node_size_max = 50, labels = FALSE)
+ggplot2::ggsave("figures/EBSfoodwebplot2.png", wp, width = 16, height = 10)
 
 
 }

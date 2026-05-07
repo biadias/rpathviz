@@ -3,7 +3,8 @@ Title: Beautiful plots for Ecopath/Rpath package
 Version: 0.0.0.9000
 Authors@R: c(
     person("Bia", "Dias", , "bia.dias@noaa.gov", role = c("aut", "cre"), comment=c(ORCID="0000-0001-5905-4044")),
-    person("Kerim", "Aydin", , "kerim.aydin@noaa.gov", role = c("aut"))
+    person("Kerim", "Aydin", , "kerim.aydin@noaa.gov", role = c("aut")),
+    person("Andy", "Beet",  email = "andrew.beet@noaa.gov", role=c("ctb"), comment = c(ORCID = "0000-0001-8270-7090"))
     )
 Description: Visualization package companion for Ecopath/Rpath. You load a Rpath object and rpathviz provides beautiful plots of your food web and simulations using ggraph and plotly. 
 License: MIT + file LICENSE
@@ -28,6 +29,7 @@ Imports:
     rlang,
     stats
 Suggests: 
+    data.table,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
