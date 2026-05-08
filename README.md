@@ -1,4 +1,4 @@
-# rpathviz <img src="man/figures/logo.png" align="right" width="120" /> 
+# rpathviz <img src="man/figures/logo2.png" align="right" width="120" /> 
 
 <!-- badges: start -->
   [![R-CMD-check](https://github.com/biadias/rpathviz/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/biadias/rpathviz/actions/workflows/R-CMD-check.yaml)

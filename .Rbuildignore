@@ -10,3 +10,4 @@
 ^\.claude$
 ^doc$
 ^Meta$
+^README\.Rmd$
