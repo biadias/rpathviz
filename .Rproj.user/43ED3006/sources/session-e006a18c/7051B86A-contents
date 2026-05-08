@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+docs
+
+# files
+*.Rproj
+inst/doc
+.positai
+/doc/
+/Meta/

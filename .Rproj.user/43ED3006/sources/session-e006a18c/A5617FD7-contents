@@ -1,0 +1,13 @@
+^data-raw$
+^rpathviz\.Rproj$
+^\.Rproj\.user$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^LICENSE\.md$
+^\.positai$
+^\.claude$
+^doc$
+^Meta$
+^README\.Rmd$
