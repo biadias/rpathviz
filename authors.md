@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Bia Dias**. Author, maintainer.
+- **Bia Dias**. Author, maintainer, copyright holder.
   [](https://orcid.org/0000-0001-5905-4044)
 
 - **Kerim Aydin**. Author.
@@ -12,16 +12,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/biadias/rpathviz/blob/v0.1.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/biadias/rpathviz/blob/main/DESCRIPTION)
 
-Dias B, Aydin K (2026). *rpathviz: Beautiful plots for Ecopath/Rpath
-package*. R package version 0.0.0.9000,
+Dias B, Aydin K (2026). *rpathviz: Publication Ready Plots for the Rpath
+Package*. R package version 0.1.0,
 <https://github.com/biadias/rpathviz>.
 
     @Manual{,
-      title = {rpathviz: Beautiful plots for Ecopath/Rpath package},
+      title = {rpathviz: Publication Ready Plots for the Rpath Package},
       author = {Bia Dias and Kerim Aydin},
       year = {2026},
-      note = {R package version 0.0.0.9000},
+      note = {R package version 0.1.0},
       url = {https://github.com/biadias/rpathviz},
     }
