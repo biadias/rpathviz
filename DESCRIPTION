@@ -1,8 +1,8 @@
 Package: rpathviz
-Title: Beautiful plots for Ecopath/Rpath package
-Version: 0.0.0.9000
+Title: Publication Ready Plots for the Rpath Package
+Version: 0.1.0
 Authors@R: c(
-    person("Bia", "Dias", , "bia.dias@noaa.gov", role = c("aut", "cre"), comment=c(ORCID="0000-0001-5905-4044")),
+    person("Bia", "Dias", , "bia.dias@noaa.gov", role = c("aut", "cre", "cph"), comment=c(ORCID="0000-0001-5905-4044")),
     person("Kerim", "Aydin", , "kerim.aydin@noaa.gov", role = c("aut")),
     person("Andy", "Beet",  email = "andrew.beet@noaa.gov", role=c("ctb"), comment = c(ORCID = "0000-0001-8270-7090"))
     )

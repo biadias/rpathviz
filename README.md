@@ -6,15 +6,15 @@
   <!-- badges: end -->
 
 
-Vizualizations for the Rpath package.
+Visualizations for the Rpath package.
 
 
 ## Installation
 
-To install the package and build all of the vignettes locally
+To install the package
 
 ```
-remotes::install_github("biadias/rpathviz", build_vignettes=TRUE)
+remotes::install_github("biadias/rpathviz", build_vignettes=FALSE)
 ```
 
 If you experience issues installing the package using `remotes` or don't need the vignettes locally then please use this alternative

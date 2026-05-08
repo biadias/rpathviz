@@ -27,7 +27,7 @@ your Ecopath/Ecosim models.
 ## Installation
 
 ```{r, eval = FALSE}
-remotes::install_github("biadias/rpathviz", build_vignettes = TRUE)
+remotes::install_github("biadias/rpathviz", build_vignettes = FALSE)
 ```
 
 If you experience issues with `remotes`, use this alternative:
