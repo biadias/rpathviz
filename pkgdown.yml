@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   Plotting: Plotting.html
   Simulations: Simulations.html
-last_built: 2026-05-08T20:43Z
+last_built: 2026-05-08T21:18Z
 urls:
   reference: https://biadias.github.io/rpathviz/reference
   article: https://biadias.github.io/rpathviz/articles
