@@ -1,3 +1,3 @@
 # rpathviz (development version)
 
-* Initial CRAN submission.
+* Initial submission and package release.
