@@ -15,13 +15,13 @@ Source:
 [`DESCRIPTION`](https://github.com/biadias/rpathviz/blob/main/DESCRIPTION)
 
 Dias B, Aydin K (2026). *rpathviz: Publication Ready Plots for the Rpath
-Package*. R package version 0.1.0,
+Package*. R package version 0.1.1,
 <https://github.com/biadias/rpathviz>.
 
     @Manual{,
       title = {rpathviz: Publication Ready Plots for the Rpath Package},
       author = {Bia Dias and Kerim Aydin},
       year = {2026},
-      note = {R package version 0.1.0},
+      note = {R package version 0.1.1},
       url = {https://github.com/biadias/rpathviz},
     }

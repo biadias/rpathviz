@@ -1,10 +1,10 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   Plotting: Plotting.html
   Simulations: Simulations.html
-last_built: 2026-05-08T21:26Z
+last_built: 2026-07-21T20:44Z
 urls:
   reference: https://biadias.github.io/rpathviz/reference
   article: https://biadias.github.io/rpathviz/articles
