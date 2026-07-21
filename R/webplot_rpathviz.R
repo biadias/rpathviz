@@ -23,6 +23,11 @@
 #' @param labels Logical. If \code{TRUE} (default), group names are drawn using
 #'   \code{ggrepel} to avoid overlap. Set to \code{FALSE} to skip labels entirely,
 #'   which roughly halves render time on large food webs.
+#' @param low_tl_spread Extra horizontal spread multiplier for low trophic-level nodes.
+#'   At the lowest trophic level the x-spacing is \code{h_spacing * low_tl_spread};
+#'   at the highest trophic level it equals \code{h_spacing}; values in between are
+#'   linearly interpolated. Default is \code{1} (uniform spacing, identical to the
+#'   original behaviour).
 #' @param cluster_method Community detection algorithm used to colour node clusters.
 #'   One of \code{"fast_greedy"} (default), \code{"louvain"},
 #'   \code{"walktrap"}, or \code{"edge_betweenness"}.
@@ -73,7 +78,8 @@ webplotviz <- function(Rpath.obj,
                                  max.overlaps = 50,
                                  gradient = TRUE,
                                  labels = TRUE,
-                                 cluster_method = c("fast_greedy", "louvain", "walktrap", "edge_betweenness"))
+                                 cluster_method = c("fast_greedy", "louvain", "walktrap", "edge_betweenness"),
+                                 low_tl_spread=1)
 {
   Biomass <- Group <- GroupNum <- cluster <- edge_stat <- fleet_tot <- from <- from_new <- id <- index <- new_id <- node_size <- to <- to_new <- type <- width <- NULL
   #Number of groups check to determine function plot
@@ -195,8 +201,37 @@ webplotviz <- function(Rpath.obj,
     lay <- dplyr::left_join(lay,
                             tidygraph::as_tibble(graph_obj, what = "nodes"), by = "id")
   }
-  lay$x <- lay$x * h_spacing      # Spread nodes horizontally
-  lay$y <- base::as.numeric(lay$TL)  # Adjust vertical spacing
+
+  lay$x <- lay$x * h_spacing
+
+  # Within-band spreading for low-TL nodes.
+  # Multiplying lay$x by a scalar preserves tiny gaps from the KK layout.
+  # Instead, nodes within each rounded-TL band are re-spaced by rank,
+  # guaranteeing a minimum separation. The spread is largest at the lowest
+  # TL and tapers to 1 (no extra spread) at the highest TL.
+  # NOTE: lay$x is modified directly to preserve the layout_tbl_graph class;
+  # piping lay through dplyr would strip that class and break ggraph.
+  if (low_tl_spread > 1) {
+    tl_min_val <- min(lay$TL, na.rm = TRUE)
+    tl_max_val <- max(lay$TL, na.rm = TRUE)
+    tl_bands   <- round(lay$TL)
+    new_x      <- lay$x
+
+    for (band in unique(tl_bands)) {
+      idx <- which(tl_bands == band)
+      nn  <- length(idx)
+      if (nn > 1) {
+        tl_norm     <- (band - tl_min_val) / (tl_max_val - tl_min_val)
+        band_spread <- low_tl_spread * (1 - tl_norm) + 1 * tl_norm
+        r           <- rank(lay$x[idx], ties.method = "first")
+        x_c         <- mean(lay$x[idx])
+        new_x[idx]  <- x_c + (r - (nn + 1) / 2) * band_spread
+      }
+    }
+    lay$x <- new_x
+  }
+
+  lay$y <- base::as.numeric(lay$TL)
 
   y_min <- base::min(lay$y, na.rm = TRUE)
   y_max <- base::max(lay$y, na.rm = TRUE)

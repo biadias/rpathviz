@@ -17,7 +17,8 @@ webplotviz(
   max.overlaps = 50,
   gradient = TRUE,
   labels = TRUE,
-  cluster_method = c("fast_greedy", "louvain", "walktrap", "edge_betweenness")
+  cluster_method = c("fast_greedy", "louvain", "walktrap", "edge_betweenness"),
+  low_tl_spread = 1
 )
 }
 \arguments{
@@ -56,6 +57,12 @@ One of \code{"fast_greedy"} (default), \code{"louvain"},
 \code{"walktrap"}, or \code{"edge_betweenness"}.
 \code{"fast_greedy"} and \code{"louvain"} are recommended for large food webs;
 \code{"edge_betweenness"} is the most accurate but significantly slower.}
+
+\item{low_tl_spread}{Extra horizontal spread multiplier for low trophic-level nodes.
+At the lowest trophic level the x-spacing is \code{h_spacing * low_tl_spread};
+at the highest trophic level it equals \code{h_spacing}; values in between are
+linearly interpolated. Default is \code{1} (uniform spacing, identical to the
+original behaviour).}
 }
 \value{
 Returns a plot visualization of the food web.
