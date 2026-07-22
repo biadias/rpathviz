@@ -62,7 +62,7 @@ webplotviz(
 
 Use `low_tl_spread` to add spacing to lower trophic level nodes. 
 
-```{r anchovy-bay-custom}
+```{r anchovy-bay-custom2}
 webplotviz(
   Rpath.obj,
   h_spacing     = 5,
