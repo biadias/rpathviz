@@ -5,6 +5,7 @@
 library(rpathviz)
 library(Rpath)
 library(data.table)
+#> Warning: package 'data.table' was built under R version 4.5.3
 ```
 
 ## Overview

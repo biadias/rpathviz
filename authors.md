@@ -12,7 +12,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/biadias/rpathviz/blob/v0.1.1/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/biadias/rpathviz/blob/HEAD/DESCRIPTION)
 
 Dias B, Aydin K (2026). *rpathviz: Publication Ready Plots for the Rpath
 Package*. R package version 0.1.1,
