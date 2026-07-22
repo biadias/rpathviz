@@ -52,6 +52,22 @@ webplotviz(
 
 ![](Plotting_files/figure-html/anchovy-bay-custom-1.png)
 
+Use `low_tl_spread` to add spacing to lower trophic level nodes.
+
+``` r
+
+webplotviz(
+  Rpath.obj,
+  h_spacing     = 5,
+  low_tl_spread = 3,
+  node_size_min = 2,
+  node_size_max = 20,
+  text_size     = 4
+)
+```
+
+![](Plotting_files/figure-html/anchovy-bay-custom2-1.png)
+
 ------------------------------------------------------------------------
 
 ## Changing color palettes
@@ -171,6 +187,7 @@ EBS.obj <- rpath(Ecosense.EBS, eco.name = "Eastern Bering Sea")
 EBS.plot <- webplotviz(
   EBS.obj,
   h_spacing     = 3,
+  low_tl_spread = 3,
   text_size     = 2.5,
   node_size_min = 2,
   node_size_max = 30,
