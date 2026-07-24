@@ -54,7 +54,7 @@ rsim.plot function from Rpath by Kerim Aydin
 if (FALSE) { # \dontrun{
 # create the Rsim object
 runObj <- Rpath::rsim.scenario(Rpath::rpath(Rpath::REco.params), Rpath::REco.params, years= 1:50)
-Rsim.output <- Rpath::rsim.run(runObj, method= "RK4", years= 1:50)
+Rsim.output <- Rpath::rsim.run(runObj, years= 1:50)
 
 # plot the Rsim object two default color blind friendly palettes
 rsimplotviz(Rsim.output, eco.name= "Anchovy Bay", spname = "all",
