@@ -13,6 +13,7 @@ ggraph_webplot_Rpath <- function(Rpath.obj,
                                  h_spacing = 3,
                                  # horizontal spacing multiplier
                                  fleet_color = "#B40F20", # single color for fleet nodes
+                                 det_color = "darkgray",
                                  text_size= 3)
   {
 
@@ -121,7 +122,9 @@ ggraph_webplot_Rpath <- function(Rpath.obj,
       graph_obj <- graph_obj %>% activate(nodes) %>% mutate(cluster = as.factor(mem))
       # Override cluster for fleet nodes: if type==3, assign cluster = "fleet"
       graph_obj <- graph_obj %>% activate(nodes) %>%
-        mutate(cluster = if_else(type == 3, "fleet", as.character(cluster)))
+        mutate(cluster = if_else(type == 3, "fleet", as.character(cluster))) %>%
+        mutate(cluster = if_else(type==2, "det", as.character(cluster)))
+
 
       # Create a layout using KK
       lay <- create_layout(graph_obj, layout = "kk")
@@ -138,11 +141,11 @@ ggraph_webplot_Rpath <- function(Rpath.obj,
       # Get all unique cluster values
       node_levels <- sort(unique(activate(graph_obj, nodes) %>% pull(cluster)))
       # Separate fleets from non-fleet clusters
-      nonfleet_levels <- setdiff(node_levels, "fleet")
+      nonfleet_levels <- setdiff(node_levels, c("fleet", "det"))
       # Assign colors to non-fleet clusters using the palette
       nonfleet_colors <- colors_net(length(nonfleet_levels))
       # Combine with a fixed color for fleets
-      color_mapping <- c("fleet" = fleet_color, setNames(nonfleet_colors, nonfleet_levels))
+      color_mapping <- c("fleet" = fleet_color, "det"= det_color, setNames(nonfleet_colors, nonfleet_levels))
 
       set_graph_style(plot_margin = margin(30, 30, 30, 30))
       jitter <- position_jitter(width = 0.1, height = 0.1)
